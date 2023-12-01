@@ -44,6 +44,8 @@ fn main() {
         )
         .as_str(),
     );
+    println!("Day {day} part 1");
     solution.part1(&file_contents);
+    println!("Day {day} part 2");
     solution.part2(&file_contents);
 }

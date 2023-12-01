@@ -7,7 +7,6 @@ impl crate::Solution for Day1 {
             let number = extract_two_digit_number(line);
             sum += number;
         }
-        println!("Day 1 part 1");
         println!("{sum}");
     }
     fn part2(&self, input: &str) {
@@ -17,7 +16,6 @@ impl crate::Solution for Day1 {
             let number = extract_two_digit_number_enhanced(line);
             sum += number;
         }
-        println!("Day 1 part 2");
         println!("{sum}");
     }
 }
