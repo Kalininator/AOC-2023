@@ -64,14 +64,7 @@ impl FromStr for Game {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let g = scanf!(s, "Game {}:{}", usize, String).unwrap();
         let picks =
-            g.1.split(";")
-                .map(|s| Pick {
-                    cubes: s
-                        .split(",")
-                        .map(|s| scanf!(s, "{}", CubePick).unwrap())
-                        .collect(),
-                })
-                .collect();
+            g.1.split(";").map(|s| Pick::from_str(s).unwrap()).collect();
         Ok(Self {
             game_number: g.0,
             picks,
@@ -81,6 +74,16 @@ impl FromStr for Game {
 
 struct Pick {
     cubes: Vec<CubePick>,
+}
+impl FromStr for Pick {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let cubes = s
+            .split(",")
+            .map(|s| scanf!(s, "{}", CubePick).unwrap())
+            .collect();
+        Ok(Self { cubes })
+    }
 }
 
 #[derive(sscanf::FromSscanf)]
