@@ -21,20 +21,8 @@ impl crate::Solution for Day1 {
 }
 
 fn extract_two_digit_number(input: &str) -> u32 {
-    let mut first_digit: char = ' ';
-    for char in input.chars() {
-        if char.is_digit(10) {
-            first_digit = char;
-            break;
-        }
-    }
-    let mut second_digit: char = ' ';
-    for char in input.chars().rev() {
-        if char.is_digit(10) {
-            second_digit = char;
-            break;
-        }
-    }
+    let first_digit: char = input.chars().find(|c| c.is_digit(10)).unwrap();
+    let second_digit: char = input.chars().rev().find(|c| c.is_digit(10)).unwrap();
     return format!("{}{}", first_digit, second_digit)
         .parse::<u32>()
         .unwrap_or(0);
@@ -78,7 +66,7 @@ fn extract_two_digit_number_enhanced(input: &str) -> u32 {
 
 fn chars_to_digit(input: &Vec<char>, reverse: bool) -> Option<u32> {
     let numbers_as_strings = vec![
-        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
+        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     ];
     let string = if reverse {
         input.iter().rev().collect::<String>()
