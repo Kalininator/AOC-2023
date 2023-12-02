@@ -1,5 +1,6 @@
-use std::cmp;
 use sscanf::scanf;
+use std::cmp;
+use std::str::FromStr;
 
 pub struct Day2;
 impl crate::Solution for Day2 {
@@ -14,30 +15,18 @@ impl crate::Solution for Day2 {
 fn part1(input: &str) {
     let mut id_sum = 0;
     for line in input.lines() {
-        let game = scanf!(line, "Game {}:{}", usize, String).unwrap();
-        let game_number = game.0;
-        let subsets = game.1.split(";");
+        let game = Game::from_str(line).unwrap();
         let mut game_valid = true;
-        for (index, subset) in subsets.enumerate() {
-            let picks = subset.split(",");
-            for pick in picks {
-                let pick = pick.trim();
-                let pick = scanf!(pick, "{} {}", usize, String).unwrap();
-                let amount = pick.0;
-                let colour = pick.1;
-                if colour == "red" && amount > 12 {
-                    game_valid = false;
-                }
-                if colour == "green" && amount > 13 {
-                    game_valid = false;
-                }
-                if colour == "blue" && amount > 14 {
+        for pick in game.picks {
+            for cp in pick.cubes {
+                let max = max_for_colour(&cp.colour);
+                if cp.amount > max {
                     game_valid = false;
                 }
             }
         }
         if game_valid {
-            id_sum += game_number;
+            id_sum += game.game_number;
         }
     }
     println!("Sum of valid games: {id_sum}");
@@ -46,27 +35,16 @@ fn part1(input: &str) {
 fn part2(input: &str) {
     let mut total_power = 0;
     for line in input.lines() {
-        let game = scanf!(line, "Game {}:{}", usize, String).unwrap();
-        let game_number = game.0;
-        let subsets = game.1.split(";");
+        let game = Game::from_str(line).unwrap();
         let mut min_red = 0;
         let mut min_green = 0;
         let mut min_blue = 0;
-        for (index, subset) in subsets.enumerate() {
-            let picks = subset.split(",");
-            for pick in picks {
-                let pick = pick.trim();
-                let pick = scanf!(pick, "{} {}", usize, String).unwrap();
-                let amount = pick.0;
-                let colour = pick.1;
-                if colour == "red" {
-                    min_red = cmp::max(min_red, amount);
-                }
-                if colour == "green" {
-                    min_green = cmp::max(min_green, amount);
-                }
-                if colour == "blue" {
-                    min_blue = cmp::max(min_blue, amount);
+        for pick in game.picks {
+            for cp in pick.cubes {
+                match cp.colour {
+                    Colour::Red => min_red = cmp::max(min_red, cp.amount),
+                    Colour::Green => min_green = cmp::max(min_green, cp.amount),
+                    Colour::Blue => min_blue = cmp::max(min_blue, cp.amount),
                 }
             }
         }
@@ -74,4 +52,58 @@ fn part2(input: &str) {
         total_power += power;
     }
     println!("Total power: {total_power}");
+}
+
+struct Game {
+    game_number: usize,
+    picks: Vec<Pick>,
+}
+
+impl FromStr for Game {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let g = scanf!(s, "Game {}:{}", usize, String).unwrap();
+        let picks =
+            g.1.split(";")
+                .map(|s| Pick {
+                    cubes: s
+                        .split(",")
+                        .map(|s| scanf!(s, "{}", CubePick).unwrap())
+                        .collect(),
+                })
+                .collect();
+        Ok(Self {
+            game_number: g.0,
+            picks,
+        })
+    }
+}
+
+struct Pick {
+    cubes: Vec<CubePick>,
+}
+
+#[derive(sscanf::FromSscanf)]
+#[sscanf(format = " {amount} {colour}")]
+struct CubePick {
+    colour: Colour,
+    amount: usize,
+}
+
+#[derive(sscanf::FromSscanf)]
+enum Colour {
+    #[sscanf(format = "red")]
+    Red,
+    #[sscanf(format = "green")]
+    Green,
+    #[sscanf(format = "blue")]
+    Blue,
+}
+
+fn max_for_colour(colour: &Colour) -> usize {
+    match colour {
+        Colour::Red => 12,
+        Colour::Green => 13,
+        Colour::Blue => 14,
+    }
 }
