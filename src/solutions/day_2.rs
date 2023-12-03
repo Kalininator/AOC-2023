@@ -1,5 +1,4 @@
 use sscanf::scanf;
-use std::cmp;
 use std::str::FromStr;
 
 pub struct Day2;
@@ -13,22 +12,12 @@ impl crate::Solution for Day2 {
 }
 
 fn part1(input: &str) {
-    let mut id_sum = 0;
-    for line in input.lines() {
-        let game = Game::from_str(line).unwrap();
-        let mut game_valid = true;
-        for pick in game.picks {
-            for cp in pick.cubes {
-                let max = max_for_colour(&cp.colour);
-                if cp.amount > max {
-                    game_valid = false;
-                }
-            }
-        }
-        if game_valid {
-            id_sum += game.game_number;
-        }
-    }
+    let id_sum = input
+        .lines()
+        .map(|line| Game::from_str(line).unwrap())
+        .filter(|game| game.is_valid())
+        .map(|game| game.game_number)
+        .sum::<usize>();
     println!("Sum of valid games: {id_sum}");
 }
 
@@ -36,20 +25,7 @@ fn part2(input: &str) {
     let mut total_power = 0;
     for line in input.lines() {
         let game = Game::from_str(line).unwrap();
-        let mut min_red = 0;
-        let mut min_green = 0;
-        let mut min_blue = 0;
-        for pick in game.picks {
-            for cp in pick.cubes {
-                match cp.colour {
-                    Colour::Red => min_red = cmp::max(min_red, cp.amount),
-                    Colour::Green => min_green = cmp::max(min_green, cp.amount),
-                    Colour::Blue => min_blue = cmp::max(min_blue, cp.amount),
-                }
-            }
-        }
-        let power = min_red * min_green * min_blue;
-        total_power += power;
+        total_power += game.cube_power();
     }
     println!("Total power: {total_power}");
 }
@@ -59,12 +35,45 @@ struct Game {
     picks: Vec<Pick>,
 }
 
+impl Game {
+    fn is_valid(&self) -> bool {
+        for pick in &self.picks {
+            for cube in &pick.cubes {
+                let max = max_for_colour(&cube.colour);
+                if cube.amount > max {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+
+    fn amount_of_colour_needed(&self, colour: Colour) -> usize {
+        self.picks
+            .iter()
+            .map(|p| {
+                p.cubes
+                    .iter()
+                    .filter(|c| c.colour == colour)
+                    .map(|c| c.amount)
+            })
+            .flatten()
+            .max()
+            .unwrap()
+    }
+
+    fn cube_power(&self) -> usize {
+        self.amount_of_colour_needed(Colour::Red)
+            * self.amount_of_colour_needed(Colour::Green)
+            * self.amount_of_colour_needed(Colour::Blue)
+    }
+}
+
 impl FromStr for Game {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let g = scanf!(s, "Game {}:{}", usize, String).unwrap();
-        let picks =
-            g.1.split(";").map(|s| Pick::from_str(s).unwrap()).collect();
+        let picks = g.1.split(";").map(|s| Pick::from_str(s).unwrap()).collect();
         Ok(Self {
             game_number: g.0,
             picks,
@@ -93,7 +102,7 @@ struct CubePick {
     amount: usize,
 }
 
-#[derive(sscanf::FromSscanf)]
+#[derive(PartialEq, sscanf::FromSscanf)]
 enum Colour {
     #[sscanf(format = "red")]
     Red,
