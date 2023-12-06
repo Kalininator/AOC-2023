@@ -1,4 +1,4 @@
-use regex::Regex;
+use crate::util::string_to_numbers;
 use sscanf::scanf;
 
 pub struct Day4;
@@ -33,21 +33,11 @@ fn part2(input: &str) {
         let winners = card_winning_count[card];
         if winners > 0 {
             for i in (card + 1)..(card + winners + 1) {
-                if i < card_qty.len() {
-                    card_qty[i] = card_qty[i] + card_qty[card];
-                }
+                card_qty[i] = card_qty[i] + card_qty[card];
             }
         }
     }
     println!("{}", card_qty.iter().sum::<usize>());
-}
-
-fn string_to_numbers(s: &str) -> Vec<usize> {
-    let regex = Regex::new(r"\d+").unwrap();
-    regex
-        .find_iter(s)
-        .filter_map(|number| number.as_str().parse().ok())
-        .collect()
 }
 
 fn count_card_winning_numbers(line: &str) -> usize {
