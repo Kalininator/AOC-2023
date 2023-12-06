@@ -1,6 +1,5 @@
 use regex::Regex;
 use sscanf::scanf;
-use std::str::FromStr;
 
 pub struct Day4;
 impl crate::Solution for Day4 {
@@ -15,13 +14,7 @@ impl crate::Solution for Day4 {
 fn part1(input: &str) {
     let mut total_score: u32 = 0;
     for line in input.lines() {
-        let c = scanf!(line, "{}: {} | {}", String, String, String).unwrap();
-        let winning_numbers = string_to_numbers(&c.1);
-        let my_numbers = string_to_numbers(&c.2);
-        let num_winners = my_numbers
-            .iter()
-            .filter(|n| winning_numbers.contains(n))
-            .count();
+        let num_winners = count_card_winning_numbers(line);
         if num_winners > 0 {
             let base: u32 = 2;
             total_score += base.pow(num_winners as u32 - 1);
@@ -30,7 +23,24 @@ fn part1(input: &str) {
     println!("{}", total_score);
 }
 
-fn part2(input: &str) {}
+fn part2(input: &str) {
+    let card_winning_count = input
+        .lines()
+        .map(count_card_winning_numbers)
+        .collect::<Vec<usize>>();
+    let mut card_qty = vec![1; card_winning_count.len()];
+    for card in 0..card_qty.len() {
+        let winners = card_winning_count[card];
+        if winners > 0 {
+            for i in (card + 1)..(card + winners + 1) {
+                if i < card_qty.len() {
+                    card_qty[i] = card_qty[i] + card_qty[card];
+                }
+            }
+        }
+    }
+    println!("{}", card_qty.iter().sum::<usize>());
+}
 
 fn string_to_numbers(s: &str) -> Vec<usize> {
     let regex = Regex::new(r"\d+").unwrap();
@@ -38,4 +48,14 @@ fn string_to_numbers(s: &str) -> Vec<usize> {
         .find_iter(s)
         .filter_map(|number| number.as_str().parse().ok())
         .collect()
+}
+
+fn count_card_winning_numbers(line: &str) -> usize {
+    let c = scanf!(line, "{}: {} | {}", String, String, String).unwrap();
+    let winning_numbers = string_to_numbers(&c.1);
+    let my_numbers = string_to_numbers(&c.2);
+    my_numbers
+        .iter()
+        .filter(|n| winning_numbers.contains(n))
+        .count()
 }
