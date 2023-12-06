@@ -30,8 +30,12 @@ fn get_day(input: Option<u32>) -> u32 {
 fn main() {
     let Args { day, file } = Args::parse();
 
-    let solutions: Vec<Box<dyn Solution>> =
-        vec![Box::new(solutions::Day1), Box::new(solutions::Day2), Box::new(solutions::Day3)];
+    let solutions: Vec<Box<dyn Solution>> = vec![
+        Box::new(solutions::Day1),
+        Box::new(solutions::Day2),
+        Box::new(solutions::Day3),
+        Box::new(solutions::Day4),
+    ];
 
     let day = get_day(day);
 
