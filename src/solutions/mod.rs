@@ -8,3 +8,5 @@ pub mod day_4;
 pub use day_4::Day4;
 pub mod day_5;
 pub use day_5::Day5;
+pub mod day_6;
+pub use day_6::Day6;
