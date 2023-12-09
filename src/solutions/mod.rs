@@ -6,3 +6,5 @@ pub mod day_3;
 pub use day_3::Day3;
 pub mod day_4;
 pub use day_4::Day4;
+pub mod day_5;
+pub use day_5::Day5;

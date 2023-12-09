@@ -35,6 +35,7 @@ fn main() {
         Box::new(solutions::Day2),
         Box::new(solutions::Day3),
         Box::new(solutions::Day4),
+        Box::new(solutions::Day5),
     ];
 
     let day = get_day(day);
