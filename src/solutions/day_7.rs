@@ -15,7 +15,7 @@ fn part1(input: &str) -> usize {
 }
 
 fn part2(input: &str) -> usize {
-    solve(&input.replace("J", "*"))
+    solve(&input.replace('J', "*"))
 }
 
 fn solve(input: &str) -> usize {
@@ -43,7 +43,7 @@ fn solve(input: &str) -> usize {
         } else {
             let a_hand_type_value = hand_type_to_value(a_hand_type);
             let b_hand_type_value = hand_type_to_value(b_hand_type);
-            return a_hand_type_value.cmp(&b_hand_type_value);
+            a_hand_type_value.cmp(&b_hand_type_value)
         }
     });
     let mut total: usize = 0;
@@ -51,7 +51,7 @@ fn solve(input: &str) -> usize {
         let winnings = entry.bid * (i + 1);
         total += winnings;
     }
-    return total;
+    total
 }
 
 #[derive(sscanf::FromSscanf, Debug)]

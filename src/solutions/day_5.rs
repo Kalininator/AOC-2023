@@ -96,7 +96,7 @@ impl MapSet {
                         return map.destination_range_start + (*seed - map.source_range_start);
                     }
                 }
-                seed.clone()
+                *seed
             })
             .collect::<Vec<usize>>()
     }

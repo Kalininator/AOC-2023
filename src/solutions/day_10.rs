@@ -12,7 +12,7 @@ impl crate::Solution for Day10 {
 fn part1(input: &str) -> usize {
     let grid = parse_grid(input);
     let mut previous = find_start(&grid);
-    let start = previous.clone();
+    let start = previous;
     let mut current = find_next_from_start(&grid, previous);
     let mut moves = 1;
     while current != start {
@@ -30,7 +30,7 @@ fn part2(input: &str) -> usize {
     let mut main_pipe_locations: Vec<(usize, usize)> = vec![];
 
     let mut previous = find_start(&grid);
-    let start = previous.clone();
+    let start = previous;
     main_pipe_locations.push(previous);
     let mut current = find_next_from_start(&grid, previous);
     while current != start {
@@ -75,8 +75,8 @@ fn parse_grid(input: &str) -> Vec<Vec<Tile>> {
             l.chars()
                 .map(|c| {
                     let str = c.to_string();
-                    let tile = scanf!(str, "{}", Tile).unwrap();
-                    tile
+                    
+                    scanf!(str, "{}", Tile).unwrap()
                 })
                 .collect::<Vec<Tile>>()
         })

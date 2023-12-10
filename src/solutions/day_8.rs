@@ -51,7 +51,7 @@ fn part2(input: &str) -> usize {
 
     let mut starting_nodes: Vec<String> = vec![];
     for node in nodes.keys() {
-        if node.chars().last().unwrap() == 'A' {
+        if node.ends_with('A') {
             starting_nodes.push(node.clone());
         }
     }
@@ -62,7 +62,7 @@ fn part2(input: &str) -> usize {
         let mut count = 0;
         let mut instruction_iter = instructions.chars().cycle();
 
-        while !current_node_name.ends_with("Z") {
+        while !current_node_name.ends_with('Z') {
             let instruction = instruction_iter.next().unwrap();
             let node = nodes.get(&current_node_name).unwrap();
             if instruction == 'L' {

@@ -48,13 +48,8 @@ fn main() {
     println!("Getting solution for day {day} with file {file}",);
 
     let file_contents = fs::read_to_string(&file).expect("Unable to read file");
-    let solution = solutions.get(day as usize - 1).expect(
-        format!(
-            "No solution for day {day}. Only have days 1-{}",
-            solutions.len()
-        )
-        .as_str(),
-    );
+    let solution = solutions.get(day as usize - 1).unwrap_or_else(|| panic!("No solution for day {day}. Only have days 1-{}",
+            solutions.len()));
     println!("Day {day} part 1");
     solution.part1(&file_contents);
     println!("Day {day} part 2");

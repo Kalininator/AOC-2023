@@ -12,7 +12,7 @@ impl crate::Solution for Day6 {
 }
 
 fn part1(input: &str) {
-    let line_1 = input.lines().nth(0).unwrap();
+    let line_1 = input.lines().next().unwrap();
     let line_2 = input.lines().nth(1).unwrap();
     let times = string_to_numbers(&scanf!(line_1, "Time: {}", String).unwrap());
     let distances = string_to_numbers(&scanf!(line_2, "Distance: {}", String).unwrap());
@@ -34,7 +34,7 @@ fn part1(input: &str) {
 }
 
 fn part2(input: &str) {
-    let line_1 = remove_whitespace(input.lines().nth(0).unwrap());
+    let line_1 = remove_whitespace(input.lines().next().unwrap());
     let line_2 = remove_whitespace(input.lines().nth(1).unwrap());
     println!("line_1: {}", line_1);
     println!("line_2: {}", line_2);

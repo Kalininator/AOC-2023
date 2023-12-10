@@ -21,24 +21,24 @@ impl crate::Solution for Day1 {
 }
 
 fn extract_two_digit_number(input: &str) -> u32 {
-    let first_digit: char = input.chars().find(|c| c.is_digit(10)).unwrap();
-    let second_digit: char = input.chars().rev().find(|c| c.is_digit(10)).unwrap();
-    return format!("{}{}", first_digit, second_digit)
+    let first_digit: char = input.chars().find(|c| c.is_ascii_digit()).unwrap();
+    let second_digit: char = input.chars().rev().find(|c| c.is_ascii_digit()).unwrap();
+    format!("{}{}", first_digit, second_digit)
         .parse::<u32>()
-        .unwrap_or(0);
+        .unwrap_or(0)
 }
 
 fn extract_two_digit_number_enhanced(input: &str) -> u32 {
     let mut first_digit: char = ' ';
     let mut found_letters = vec![];
     for char in input.chars() {
-        if char.is_digit(10) {
+        if char.is_ascii_digit() {
             first_digit = char;
             break;
         } else {
             found_letters.push(char);
             if let Some(number) = chars_to_digit(&found_letters, false) {
-                first_digit = std::char::from_digit(number as u32, 10).unwrap();
+                first_digit = std::char::from_digit(number, 10).unwrap();
                 break;
             }
         }
@@ -48,26 +48,24 @@ fn extract_two_digit_number_enhanced(input: &str) -> u32 {
     found_letters = vec![];
 
     for char in input.chars().rev() {
-        if char.is_digit(10) {
+        if char.is_ascii_digit() {
             second_digit = char;
             break;
         } else {
             found_letters.push(char);
             if let Some(number) = chars_to_digit(&found_letters, true) {
-                second_digit = std::char::from_digit(number as u32, 10).unwrap();
+                second_digit = std::char::from_digit(number, 10).unwrap();
                 break;
             }
         }
     }
-    return format!("{}{}", first_digit, second_digit)
+    format!("{}{}", first_digit, second_digit)
         .parse::<u32>()
-        .unwrap();
+        .unwrap()
 }
 
 fn chars_to_digit(input: &Vec<char>, reverse: bool) -> Option<u32> {
-    let numbers_as_strings = vec![
-        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-    ];
+    let numbers_as_strings = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
     let string = if reverse {
         input.iter().rev().collect::<String>()
     } else {

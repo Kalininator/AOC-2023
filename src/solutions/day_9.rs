@@ -29,7 +29,7 @@ fn part1(input: &str) -> isize {
         let mut foo = 0;
         for row in (1..history.len()).rev() {
             println!("{:?}", history[row]);
-            foo = history[row - 1].last().unwrap() + foo;
+            foo += history[row - 1].last().unwrap();
         }
         println!("{:?}", history[0]);
         sum += foo;
@@ -49,7 +49,7 @@ fn part2(input: &str) -> isize {
                 .map(|w| w[1] - w[0])
                 .collect::<Vec<isize>>();
             history.push(new_entry.clone());
-            if new_entry.len() == 0 {
+            if new_entry.is_empty() {
                 break 'inner;
             }
         }

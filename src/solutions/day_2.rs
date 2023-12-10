@@ -51,13 +51,12 @@ impl Game {
     fn amount_of_colour_needed(&self, colour: Colour) -> usize {
         self.picks
             .iter()
-            .map(|p| {
+            .flat_map(|p| {
                 p.cubes
                     .iter()
                     .filter(|c| c.colour == colour)
                     .map(|c| c.amount)
             })
-            .flatten()
             .max()
             .unwrap()
     }
@@ -73,7 +72,7 @@ impl FromStr for Game {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let g = scanf!(s, "Game {}:{}", usize, String).unwrap();
-        let picks = g.1.split(";").map(|s| Pick::from_str(s).unwrap()).collect();
+        let picks = g.1.split(';').map(|s| Pick::from_str(s).unwrap()).collect();
         Ok(Self {
             game_number: g.0,
             picks,
@@ -88,7 +87,7 @@ impl FromStr for Pick {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let cubes = s
-            .split(",")
+            .split(',')
             .map(|s| scanf!(s, "{}", CubePick).unwrap())
             .collect();
         Ok(Self { cubes })

@@ -33,7 +33,7 @@ fn part2(input: &str) {
         let winners = card_winning_count[card];
         if winners > 0 {
             for i in (card + 1)..(card + winners + 1) {
-                card_qty[i] = card_qty[i] + card_qty[card];
+                card_qty[i] += card_qty[card];
             }
         }
     }
