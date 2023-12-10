@@ -43,8 +43,7 @@ fn part2(input: &str) -> usize {
     let mut all_hiding_spots: Vec<(usize, usize)> = vec![];
     for row in 0..grid.len() {
         for column in 0..grid[row].len() {
-            if !main_pipe_locations.contains(&(row, column))
-            {
+            if !main_pipe_locations.contains(&(row, column)) {
                 all_hiding_spots.push((row, column));
             }
         }
@@ -192,7 +191,25 @@ mod test {
 .L-J.
 ....."#
             ),
-            8
+            4
         );
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(
+            part2(
+                r#"...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|..|.|..|.
+.L--J.L--J.
+..........."#
+            ),
+            4
+        )
     }
 }
