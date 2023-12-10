@@ -1,6 +1,5 @@
 use crate::util::string_to_numbers;
 use sscanf::scanf;
-use std::str::FromStr;
 
 pub struct Day6;
 impl crate::Solution for Day6 {

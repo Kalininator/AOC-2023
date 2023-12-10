@@ -1,6 +1,3 @@
-use sscanf::scanf;
-use std::collections::HashMap;
-
 use crate::util::string_to_numbers_i;
 
 pub struct Day9;
