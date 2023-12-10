@@ -25,7 +25,48 @@ fn part1(input: &str) -> usize {
 }
 
 fn part2(input: &str) -> usize {
-    0
+    let grid = parse_grid(input);
+
+    let mut main_pipe_locations: Vec<(usize, usize)> = vec![];
+
+    let mut previous = find_start(&grid);
+    let start = previous.clone();
+    main_pipe_locations.push(previous);
+    let mut current = find_next_from_start(&grid, previous);
+    while current != start {
+        main_pipe_locations.push(current);
+        let temp = next_position(previous, current, grid[current.0][current.1]);
+        previous = current;
+        current = temp;
+    }
+
+    let mut all_hiding_spots: Vec<(usize, usize)> = vec![];
+    for row in 0..grid.len() {
+        for column in 0..grid[row].len() {
+            if !main_pipe_locations.contains(&(row, column))
+            {
+                all_hiding_spots.push((row, column));
+            }
+        }
+    }
+
+    let mut inside_boundary: Vec<(usize, usize)> = vec![];
+    for t in all_hiding_spots {
+        let mut crossings = 0;
+        for column in 0..t.1 {
+            let tile = grid[t.0][column];
+            if main_pipe_locations.contains(&(t.0, column))
+                && (tile == Tile::Vertical || tile == Tile::BendNE || tile == Tile::BendNW)
+            {
+                crossings += 1;
+            }
+        }
+        if crossings % 2 == 1 {
+            inside_boundary.push(t);
+        }
+    }
+    println!("{:?}", inside_boundary);
+    inside_boundary.len()
 }
 
 fn parse_grid(input: &str) -> Vec<Vec<Tile>> {
@@ -143,10 +184,15 @@ mod test {
     use super::*;
     #[test]
     fn test_part1() {
-        assert_eq!(part1(r#".....
+        assert_eq!(
+            part1(
+                r#".....
 .S-7.
 .|.|.
 .L-J.
-....."#), 8);
+....."#
+            ),
+            8
+        );
     }
 }
