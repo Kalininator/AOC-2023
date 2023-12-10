@@ -41,7 +41,7 @@ fn part2(input: &str) -> usize {
     }
 
     let mut all_hiding_spots: Vec<(usize, usize)> = vec![];
-    for row in 0..grid.len() {
+    for (row, _) in grid.iter().enumerate() {
         for column in 0..grid[row].len() {
             if !main_pipe_locations.contains(&(row, column)) {
                 all_hiding_spots.push((row, column));
@@ -83,7 +83,7 @@ fn parse_grid(input: &str) -> Vec<Vec<Tile>> {
         .collect::<Vec<Vec<Tile>>>()
 }
 
-fn find_start(grid: &Vec<Vec<Tile>>) -> (usize, usize) {
+fn find_start(grid: &[Vec<Tile>]) -> (usize, usize) {
     for (row, row_vec) in grid.iter().enumerate() {
         for (col, tile) in row_vec.iter().enumerate() {
             if *tile == Tile::Start {
@@ -94,7 +94,7 @@ fn find_start(grid: &Vec<Vec<Tile>>) -> (usize, usize) {
     unreachable!()
 }
 
-fn find_next_from_start(grid: &Vec<Vec<Tile>>, start: (usize, usize)) -> (usize, usize) {
+fn find_next_from_start(grid: &[Vec<Tile>], start: (usize, usize)) -> (usize, usize) {
     let above = grid[start.0 - 1][start.1];
     if above == Tile::Vertical || above == Tile::BendSE || above == Tile::BendSW {
         return (start.0 - 1, start.1);

@@ -85,7 +85,7 @@ impl FromStr for MapSet {
 }
 
 impl MapSet {
-    fn apply(&self, seeds: &Vec<usize>) -> Vec<usize> {
+    fn apply(&self, seeds: &[usize]) -> Vec<usize> {
         seeds
             .iter()
             .map(|seed| {

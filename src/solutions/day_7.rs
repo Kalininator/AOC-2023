@@ -145,10 +145,10 @@ fn hand_type(hand: Vec<char>) -> HandType {
 
 fn cmp_hand_values(a: Vec<usize>, b: Vec<usize>) -> std::cmp::Ordering {
     for i in 0..a.len() {
-        if a[i] > b[i] {
-            return std::cmp::Ordering::Greater;
-        } else if a[i] < b[i] {
-            return std::cmp::Ordering::Less;
+        match a[i].cmp(&b[i]) {
+            std::cmp::Ordering::Greater => return std::cmp::Ordering::Greater,
+            std::cmp::Ordering::Less => return std::cmp::Ordering::Less,
+            std::cmp::Ordering::Equal => continue,
         }
     }
     std::cmp::Ordering::Equal

@@ -64,7 +64,7 @@ fn extract_two_digit_number_enhanced(input: &str) -> u32 {
         .unwrap()
 }
 
-fn chars_to_digit(input: &Vec<char>, reverse: bool) -> Option<u32> {
+fn chars_to_digit(input: &[char], reverse: bool) -> Option<u32> {
     let numbers_as_strings = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
     let string = if reverse {
         input.iter().rev().collect::<String>()

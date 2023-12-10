@@ -26,13 +26,13 @@ fn part1(input: &str) -> isize {
                 break 'inner;
             }
         }
-        let mut foo = 0;
+        let mut interpolated_value = 0;
         for row in (1..history.len()).rev() {
             println!("{:?}", history[row]);
-            foo += history[row - 1].last().unwrap();
+            interpolated_value += history[row - 1].last().unwrap();
         }
         println!("{:?}", history[0]);
-        sum += foo;
+        sum += interpolated_value;
     }
     sum
 }
@@ -53,13 +53,13 @@ fn part2(input: &str) -> isize {
                 break 'inner;
             }
         }
-        let mut foo = 0;
+        let mut interpolated_value = 0;
         for row in (1..history.len()).rev() {
             println!("{:?}", history[row]);
-            foo = history[row - 1].first().unwrap() - foo;
+            interpolated_value = history[row - 1].first().unwrap() - interpolated_value;
         }
         println!("{:?}", history[0]);
-        sum += foo;
+        sum += interpolated_value;
     }
     sum
 }
