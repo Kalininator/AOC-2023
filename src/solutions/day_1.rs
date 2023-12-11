@@ -1,5 +1,4 @@
-pub struct Day1;
-impl crate::Solution for Day1 {
+pub struct Day1; impl crate::Solution for Day1 {
     fn part1(&self, input: &str) {
         let lines: Vec<&str> = input.lines().collect();
         let mut sum = 0;
