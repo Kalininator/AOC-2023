@@ -1,5 +1,3 @@
-// use sscanf::scanf;
-
 use itertools::Itertools;
 pub struct Day11;
 impl crate::Solution for Day11 {
@@ -12,61 +10,14 @@ impl crate::Solution for Day11 {
 }
 
 fn part1(input: &str) -> usize {
-    let chars: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
-    let hash_locations =
-        chars
-            .iter()
-            .enumerate()
-            .fold(Vec::new(), |mut acc: Vec<(usize, usize)>, (y, line)| {
-                acc.extend(
-                    line.iter()
-                        .enumerate()
-                        .filter(|(_, c)| **c == '#')
-                        .map(|(x, _)| (y, x)),
-                );
-                acc
-            });
-    println!("{:?}", hash_locations);
-    let rows_without_hashes =
-        chars
-            .iter()
-            .enumerate()
-            .fold(Vec::new(), |mut acc: Vec<usize>, (y, line)| {
-                if line.iter().filter(|c| **c == '#').count() == 0 {
-                    acc.push(y);
-                }
-                acc
-            });
-    println!("{:?}", rows_without_hashes);
-    let mut columns_without_hashes = Vec::new();
-    for column in 0..chars[0].len() {
-        let mut has_hash = false;
-        for row in 0..chars.len() {
-            if chars[row][column] == '#' {
-                has_hash = true;
-            }
-        }
-        if !has_hash {
-            columns_without_hashes.push(column);
-        }
-    }
-    println!("{:?}", columns_without_hashes);
-
-    let mut total_distances = 0;
-    for combination in hash_locations.into_iter().combinations(2) {
-        println!("A: {:?}, B: {:?}", combination[0], combination[1]);
-        let horizontal_distance =
-            columns_between_hashes(combination[0], combination[1], &columns_without_hashes, 2);
-        let vertical_distance =
-            rows_between_hashes(combination[0], combination[1], &rows_without_hashes, 2);
-        println!("H: {}, V: {}", horizontal_distance, vertical_distance);
-        println!("Total: {}", horizontal_distance + vertical_distance);
-        total_distances += horizontal_distance + vertical_distance;
-    }
-    total_distances
+    calculate(input, 2)
 }
 
 fn part2(input: &str) -> usize {
+    calculate(input, 1000000)
+}
+
+fn calculate(input: &str, actual_distance: usize) -> usize {
     let chars: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
     let hash_locations =
         chars
@@ -81,7 +32,6 @@ fn part2(input: &str) -> usize {
                 );
                 acc
             });
-    println!("{:?}", hash_locations);
     let rows_without_hashes =
         chars
             .iter()
@@ -92,11 +42,10 @@ fn part2(input: &str) -> usize {
                 }
                 acc
             });
-    println!("{:?}", rows_without_hashes);
     let mut columns_without_hashes = Vec::new();
     for column in 0..chars[0].len() {
         let mut has_hash = false;
-        for row in 0..chars.len() {
+        for (row, _) in chars.iter().enumerate() {
             if chars[row][column] == '#' {
                 has_hash = true;
             }
@@ -105,17 +54,21 @@ fn part2(input: &str) -> usize {
             columns_without_hashes.push(column);
         }
     }
-    println!("{:?}", columns_without_hashes);
 
     let mut total_distances = 0;
     for combination in hash_locations.into_iter().combinations(2) {
-        println!("A: {:?}, B: {:?}", combination[0], combination[1]);
-        let horizontal_distance =
-            columns_between_hashes(combination[0], combination[1], &columns_without_hashes, 1000000);
-        let vertical_distance =
-            rows_between_hashes(combination[0], combination[1], &rows_without_hashes, 1000000);
-        println!("H: {}, V: {}", horizontal_distance, vertical_distance);
-        println!("Total: {}", horizontal_distance + vertical_distance);
+        let horizontal_distance = columns_between_hashes(
+            combination[0],
+            combination[1],
+            &columns_without_hashes,
+            actual_distance,
+        );
+        let vertical_distance = rows_between_hashes(
+            combination[0],
+            combination[1],
+            &rows_without_hashes,
+            actual_distance,
+        );
         total_distances += horizontal_distance + vertical_distance;
     }
     total_distances
@@ -141,7 +94,12 @@ fn columns_between_hashes(
     }
 }
 
-fn rows_between_hashes(a: (usize, usize), b: (usize, usize), rows_with_hashes: &[usize], actual_distance: usize) -> usize {
+fn rows_between_hashes(
+    a: (usize, usize),
+    b: (usize, usize),
+    rows_with_hashes: &[usize],
+    actual_distance: usize,
+) -> usize {
     if a.0 > b.0 {
         rows_between_hashes(b, a, rows_with_hashes, actual_distance)
     } else {
@@ -160,9 +118,9 @@ fn rows_between_hashes(a: (usize, usize), b: (usize, usize), rows_with_hashes: &
 mod test {
     use super::*;
     #[test]
-    fn test_part1() {
+    fn test_calculate_2() {
         assert_eq!(
-            part1(
+            calculate(
                 r#"...#......
 .......#..
 #.........
@@ -172,27 +130,50 @@ mod test {
 .........#
 ..........
 .......#..
-#...#....."#
+#...#....."#,
+                2
             ),
             374
         );
     }
 
-    //     #[test]
-    //     fn test_part2() {
-    //         assert_eq!(
-    //             part2(
-    //                 r#"...........
-    // .S-------7.
-    // .|F-----7|.
-    // .||.....||.
-    // .||.....||.
-    // .|L-7.F-J|.
-    // .|..|.|..|.
-    // .L--J.L--J.
-    // ..........."#
-    //             ),
-    //             4
-    //         )
-    //     }
+    #[test]
+    fn test_calculate_10() {
+        assert_eq!(
+            calculate(
+                r#"...#......
+.......#..
+#.........
+..........
+......#...
+.#........
+.........#
+..........
+.......#..
+#...#....."#,
+                10
+            ),
+            1030
+        );
+    }
+
+    #[test]
+    fn test_calculate_100() {
+        assert_eq!(
+            calculate(
+                r#"...#......
+.......#..
+#.........
+..........
+......#...
+.#........
+.........#
+..........
+.......#..
+#...#....."#,
+                100
+            ),
+            8410
+        );
+    }
 }
