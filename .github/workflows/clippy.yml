@@ -1,13 +1,19 @@
-on: push
+on: [pull_request]
+
 name: Clippy check
 
 env:
   RUSTFLAGS: "-Dwarnings"
 
 jobs:
-  clippy_check:
+  clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Run Clippy
-        run: cargo clippy --all-targets --all-features
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@stable
+      with:
+        components: clippy
+    - uses: giraffate/clippy-action@v1
+      with:
+        reporter: 'github-pr-check'
+        github_token: ${{ secrets.GITHUB_TOKEN }}
