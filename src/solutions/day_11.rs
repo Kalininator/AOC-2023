@@ -1,4 +1,4 @@
-use sscanf::scanf;
+// use sscanf::scanf;
 pub struct Day11;
 impl crate::Solution for Day11 {
     fn part1(&self, input: &str) {
